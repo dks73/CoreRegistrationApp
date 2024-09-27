@@ -1,7 +1,9 @@
+using Application.Data_Factory;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+AllServices.ConfigureServicesDetails(builder.Services);
 
 var app = builder.Build();
 
