@@ -13,3 +13,17 @@
 #frm{
     background-color:aliceblue
 }
+.input-group-append {
+    display: flex;
+    align-items: center;
+}
+
+#btnupload {
+    margin-right: 8px; 
+}
+
+#responseMessage {
+    font-size: 0.9em;
+    color: #007bff;
+    white-space: nowrap;
+}

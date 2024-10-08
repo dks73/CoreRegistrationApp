@@ -9,6 +9,53 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script>
+        
+        $(document).ready(function () {
+            $('#vdata').click(function () {
+                location.href = "/RegdForm/ViewAllData";
+            });
+            $('#vdata').click(function () {
+                $('#responseMessage').val('');
+            });
+            
+            $('#btnupload').click(function (e) {
+                e.preventDefault();
+                var fileInput = $('#filename')[0].files[0];
+
+                if (!fileInput) {
+                    $('#responseMessage').text('Please select a file.');
+                    return;
+                }
+
+                var allowedExtensions = /(\.pdf|\.docx)$/i;
+                if (!allowedExtensions.exec(fileInput.name)) {
+                    $('#responseMessage').text('Only PDF and DOCX files are allowed.');
+                    return;
+                }
+
+                var frmdta = new FormData();
+                frmdta.append("filenamee", fileInput);
+
+                $.ajax({
+                    url: '/RegdForm/Upload',
+                    type: 'POST',
+                    processData: false,
+                    contentType: false,
+                    data: frmdta,
+                    success: function (response) {
+                        $('#responseMessage').text(response.message);
+                    },
+                    error: function (xhr) {
+                        $('#responseMessage').text('Error: ' + xhr.responseText);
+                    }
+                });
+            });
+
+        });
+    </script>
     </head>
     <body>
     <div class="form-container">
@@ -44,12 +91,22 @@
             </div>
 
             <div class="form-group">
-                <label for="image">Upload Image</label>
-                <input type="file" class="form-control-file" id="image" accept="image/*" required>
+                <label for="filename">Upload Document</label>
+                <div class="input-group">
+                    <input type="file" class="form-control-file" id="filename" required />
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-primary" id="btnupload">Upload</button>
+                        <span id="responseMessage" class="ml-2"></span>
+                    </div>
+                </div>
+                <small class="form-text text-muted">Only PDF, DOCX files are allowed.</small>
             </div>
 
+
+
             <button type="submit" class="btn btn-primary btn-block">Register</button>
-            <button type="reset" class="btn btn-danger btn-block">Reset</button>
+            <button type="reset" class="btn btn-danger btn-block" id="btnreset">Reset</button>
+            <button type="button" id="vdata" class="btn btn-success btn-block">View Data</button>
         </form>
     </div>
     </body>
