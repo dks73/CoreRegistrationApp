@@ -3,13 +3,19 @@
 }
 <html>
     <head>
-        <link href="~/css/style.css" rel="stylesheet" />
 
+    <link href="~/css/style.css" rel="stylesheet" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    @* For Jquery Ajax *@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    @* For Sweet Alert *@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         
@@ -26,13 +32,23 @@
                 var fileInput = $('#filename')[0].files[0];
 
                 if (!fileInput) {
-                    $('#responseMessage').text('Please select a file.');
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Select file',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                     return;
                 }
 
                 var allowedExtensions = /(\.pdf|\.docx)$/i;
                 if (!allowedExtensions.exec(fileInput.name)) {
-                    $('#responseMessage').text('Only PDF and DOCX files are allowed.');
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Only PDF and DOCX files are allowed.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                     return;
                 }
 
@@ -46,10 +62,140 @@
                     contentType: false,
                     data: frmdta,
                     success: function (response) {
-                        $('#responseMessage').text(response.message);
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        })
                     },
                     error: function (xhr) {
                         $('#responseMessage').text('Error: ' + xhr.responseText);
+                    }
+                });
+            });
+
+            //Submit Data
+            $('#btnRegister').click(function (e) {
+                e.preventDefault();
+                var name = $('#name').val();
+                var uname = $('#username').val();
+                var pwd = $('#password').val();
+                var cpwd = $('#cnfpassword').val();
+                var gender = $('input[name="gender"]:checked');
+                var fileInput = $('#filename')[0].files[0];
+                if (name=='')
+                {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Name Can not Be Blank',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+                if (uname == '') {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'User Name Can not Be Blank',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+                if (pwd == '') {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Password Can not Be Blank',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+                if (cpwd == '') {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Confirm Password Can not Be Blank',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+                if (gender.length === 0) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Select Gender',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+                if (pwd != cpwd) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Password and Confirm Password Was Not Matched.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+                if (!fileInput) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Select file',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+                var frmdta = new FormData();
+                frmdta.append("sname", $('#name').val());
+                frmdta.append("username", $('#username').val());
+                frmdta.append("password", $('#password').val());
+                frmdta.append("gender", $('input[name="gender"]:checked').val());
+                Swal.fire({
+                    title: 'Are you sure to Register?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Register',
+                    confirmButtonColor: 'blue',
+                    cancelButtonText: 'Cancel',
+                    cancelButtonColor: 'red',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/RegdForm/InsertData',
+                            type: 'POST',
+                            processData: false,
+                            contentType: false,
+                            data: frmdta,
+                            success: function (response) {
+                                if (response.success = true)
+                                {
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: response.message,
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    }).then(() => {
+                                        location.href = "/RegdForm/ViewAllData";
+                                    });
+                                }
+                                else
+                                {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: response.message,
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+
+                            },
+                            error: function (xhr) {
+                                $('#responseMessage').text('Error: ' + xhr.responseText);
+                            }
+                        });
                     }
                 });
             });
@@ -59,33 +205,34 @@
     </head>
     <body>
     <div class="form-container">
-        <h2 class="text-center"><b>Registration Form</b></h2>
+        <h2 class="text-center"><b>Student Registration Form</b></h2>
         <form id="frm">
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+                <input type="text" class="form-control" id="name" placeholder="Enter your name">
             </div>
             <div class="form-group">
                 <label for="name">User Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Enter your User name" required>
+                <input type="text" class="form-control" id="username" placeholder="Enter your User name">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Password" required>
+                <input type="password" class="form-control" id="password" placeholder="Password">
             </div>
             <div class="form-group">
                 <label for="password">Confirm Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Confirm Password" required>
+                <input type="password" class="form-control" id="cnfpassword" placeholder="Confirm Password">
+                <span id="passwordError" style="color: red; display: none;"></span>
             </div>
 
             <div class="form-group">
                 <label>Gender</label><br>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="male" value="male" required>
+                    <input class="form-check-input" type="radio" name="gender" id="male" value="1">
                     <label class="form-check-label" for="male">Male</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="gender" id="female" value="female" required>
+                    <input class="form-check-input" type="radio" name="gender" id="female" value="2">
                     <label class="form-check-label" for="female">Female</label>
                 </div>
             </div>
@@ -93,18 +240,14 @@
             <div class="form-group">
                 <label for="filename">Upload Document</label>
                 <div class="input-group">
-                    <input type="file" class="form-control-file" id="filename" required />
+                    <input type="file" class="form-control-file" id="filename" />
                     <div class="input-group-append">
                         <button type="button" class="btn btn-primary" id="btnupload">Upload</button>
                         <span id="responseMessage" class="ml-2"></span>
                     </div>
-                </div>
-                <small class="form-text text-muted">Only PDF, DOCX files are allowed.</small>
+                </div>               
             </div>
-
-
-
-            <button type="submit" class="btn btn-primary btn-block">Register</button>
+            <button type="submit" class="btn btn-primary btn-block" id="btnRegister">Register</button>
             <button type="reset" class="btn btn-danger btn-block" id="btnreset">Reset</button>
             <button type="button" id="vdata" class="btn btn-success btn-block">View Data</button>
         </form>

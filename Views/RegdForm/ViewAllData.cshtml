@@ -12,6 +12,14 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#Regdpage').click(function () {
+                location.href = "/RegdForm/index";
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="container mt-5">
@@ -22,6 +30,7 @@
                     <tr>
                         <th>Student Name</th>
                         <th>Gender</th>
+                        <th>Files</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,11 +39,13 @@
                         <tr>
                             <td>@item.studentname</td>
                             <td>@item.gender</td>
+                            <td>@Html.ActionLink(@item.image, "Download", "RegdForm", new { filename = item.image }, null)</td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
+        <button type="button" id="Regdpage" class="btn btn-success btn-block">Go to Registration Page</button>
     </div>
 </body>
 </html>
