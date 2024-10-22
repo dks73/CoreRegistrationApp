@@ -1,0 +1,254 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Dashboard with Charts</title>
+    @*     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script> *@
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="~/css/commonnav.css" rel="stylesheet" />
+    @* For Jquery Ajax *@
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    @* For Sweet Alert *@
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            //Submit Data
+            $('#btnAdd').click(function (e) {
+                e.preventDefault();
+                // var name = $('#fullName').val();
+                // var rollno = $('#rollno').val();
+                // var email = $('#email').val();
+                // var phone = $('#phone').val();
+                // var dob = $('#dob').val();
+                // var gender = $('input[name="gender"]:selected');
+                // var course = $('input[name="course"]:selected');
+                // var fileInput = $('#filename')[0].files[0];
+                // if (name == '') {
+                //     Swal.fire({
+                //         title: 'Error!',
+                //         text: 'Name Can not Be Blank',
+                //         icon: 'error',
+                //         confirmButtonText: 'OK'
+                //     });
+                //     return;
+                // }
+                // if (uname == '') {
+                //     Swal.fire({
+                //         title: 'Error!',
+                //         text: 'User Name Can not Be Blank',
+                //         icon: 'error',
+                //         confirmButtonText: 'OK'
+                //     });
+                //     return;
+                // }
+                // if (pwd == '') {
+                //     Swal.fire({
+                //         title: 'Error!',
+                //         text: 'Password Can not Be Blank',
+                //         icon: 'error',
+                //         confirmButtonText: 'OK'
+                //     });
+                //     return;
+                // }
+                // if (cpwd == '') {
+                //     Swal.fire({
+                //         title: 'Error!',
+                //         text: 'Confirm Password Can not Be Blank',
+                //         icon: 'error',
+                //         confirmButtonText: 'OK'
+                //     });
+                //     return;
+                // }
+                // if (gender.length === 0) {
+                //     Swal.fire({
+                //         title: 'Error!',
+                //         text: 'Select Gender',
+                //         icon: 'error',
+                //         confirmButtonText: 'OK'
+                //     });
+                //     return;
+                // }
+                // if (pwd != cpwd) {
+                //     Swal.fire({
+                //         title: 'Error!',
+                //         text: 'Password and Confirm Password Was Not Matched.',
+                //         icon: 'error',
+                //         confirmButtonText: 'OK'
+                //     });
+                //     return;
+                // }
+                // if (!fileInput) {
+                //     Swal.fire({
+                //         title: 'Error!',
+                //         text: 'Select file',
+                //         icon: 'error',
+                //         confirmButtonText: 'OK'
+                //     });
+                //     return;
+                // }
+                var frmdta = new FormData();
+                frmdta.append("name", $('#fullName').val());
+                frmdta.append("regdcode", $('#regdno').val());
+                frmdta.append("email", $('#email').val());
+                frmdta.append("phoneno",$('#phone').val());
+                frmdta.append("dob", $('#dob').val());
+                frmdta.append("gender", $('#gender').val());
+                Swal.fire({
+                    title: 'Are you sure to Register?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Register',
+                    confirmButtonColor: 'blue',
+                    cancelButtonText: 'Cancel',
+                    cancelButtonColor: 'red',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/RegdForm/LibrerianRegdAdd',
+                            type: 'POST',
+                            processData: false,
+                            contentType: false,
+                            data: frmdta,
+                            success: function (response) {
+                                if (response.success = true) {
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: response.message,
+                                        icon: 'success',
+                                        confirmButtonText: 'OK'
+                                    }).then(() => {
+                                        location.href = "/RegdForm/LibrerianRegdView";
+                                    });
+                                }
+                                else {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: response.message,
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+
+                            },
+                            error: function (xhr) {
+                                $('#responseMessage').text('Error: ' + xhr.responseText);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/RegdForm/LogOut">Log Out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- Sidebar -->
+            <div class="col-md-2 bg-light sidebar py-3">
+                <h6 class="sidebar-heading px-3">Menu</h6>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/RegdForm/Dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/RegdForm/StudentRegd">Student Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active2" href="/RegdForm/LibrerianRegd">Librarian Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/RegdForm/ViewAllData">User Details</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Main Content -->
+            @*  <main class="col-md-10 ms-sm-auto col-lg-10 px-md-4"> *@
+            <!-- Tab Bar -->
+            <div class="container mt-5">
+                <!-- Navigation Tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/RegdForm/LibrerianRegd">Add</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/RegdForm/LibrerianRegdView">View</a>
+                    </li>
+                </ul>
+
+                <!-- Form Section -->
+                <h2 class="text-center mt-4">Add Librerian</h2>
+                <form>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" placeholder="Enter Full Name">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email">Regd. No</label>
+                            <input type="text" class="form-control" id="regdno" placeholder="Enter Regd No">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email">Email Address</label>
+                            <input type="text" class="form-control" id="email" placeholder="Enter Email Address">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone">Phone Number</label>
+                            <input type="text" class="form-control" id="phone" placeholder="Enter Phone Number">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" class="form-control" id="dob">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="gender">Gender</label>
+                            <select class="form-control" id="gender">
+                                <option value="" disabled selected>Select Gender</option>
+                                <option value="1">Male</option>
+                                <option value="2">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="btnAdd">Add</button>
+                </form>
+            </div>
+            @*  </main> *@
+        </div>
+    </div>
+</body>
+</html>
+
