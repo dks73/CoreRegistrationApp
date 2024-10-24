@@ -115,21 +115,25 @@
                             contentType: false,
                             data: frmdta,
                             success: function (response) {
-                                if (response.success = true)
-                                {                                
-                                   location.href = "/RegdForm/Dashboard";
+                                if (response.success == true)
+                                {
+                                    location.href = "/RegdForm/Dashboard";
                                 }
                                 else
                                 {
-                                    Swal.fire({
-                                        title: 'Error!',
-                                        text: response.message,
-                                        icon: 'error',
-                                        confirmButtonText: 'OK'
-                                    }).then(() => {
-                                        location.href = "/RegdForm/LogIn";
-                                    });
+                                    $('#message').text(response.message);
                                 }
+                                // else
+                                // {
+                                //     Swal.fire({
+                                //         title: 'Error!',
+                                //         text: response.message,
+                                //         icon: 'error',
+                                //         confirmButtonText: 'OK'
+                                //     }).then(() => {
+                                //         location.href = "/RegdForm/LogIn";
+                                //     });
+                                // }
                             },
                             error: function (xhr) {
                                 $('#responseMessage').text('Error: ' + xhr.responseText);
@@ -156,6 +160,7 @@
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" class="form-control" id="password" placeholder="Enter Password">
+                    <span style="color:red;" id="message"></span>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block" id="btnRegister">Login</button>
                 <button type="reset" class="btn btn-danger btn-block" id="btnreset">Clear</button>

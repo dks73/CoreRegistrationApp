@@ -210,23 +210,31 @@ namespace CoreRegistrationApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CheckLogIn(UserdetailsModel details)
         {
-            if(details!=null)
+            if (details != null)
             {
                 var getUserdetails = await _std.GetUserDetails();
                 var userdetailsfiltered = getUserdetails.Where(s => s.username == details.username && s.password == details.password).FirstOrDefault();
-                bool existUser = getUserdetails.Any(s => s.username == details.username && s.password == details.password);
-                if (existUser) 
+                bool existUser = getUserdetails.Any(s => s.username == details.username);
+                bool existpassword = getUserdetails.Any(s => s.username == details.username && s.password == details.password);
+                if (existUser)
                 {
-                    HttpContext.Session.SetString("username", userdetailsfiltered.username);
-                    HttpContext.Session.SetString("name", userdetailsfiltered.fullname);
-                    return Json(new { success = true});
+                    if (existpassword)
+                    {
+                        HttpContext.Session.SetString("username", userdetailsfiltered.username);
+                        HttpContext.Session.SetString("name", userdetailsfiltered.fullname);
+                        return Json(new { success = true, message = "Libreian Added Successfully." });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Incorrect Password" });
+                    }
+
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Invalid username or password.");
-                    return View();
-                    //return Json(new { success = false, message = "User Not Exist" });
+                    return Json(new { success = false, message = "Invalid User" });
                 }
+            
 
             }
             return View();
