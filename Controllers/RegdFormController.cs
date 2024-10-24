@@ -201,7 +201,7 @@ namespace CoreRegistrationApp.Controllers
         public  IActionResult LogOut()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Index");
+            return RedirectToAction("LogIn");
         }
         public IActionResult LogIn()
         {
